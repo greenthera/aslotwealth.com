@@ -1,10 +1,11 @@
-import { createServerSupabaseClient } from '@/lib/supabase/server';
+import { getAllPosts } from '@/lib/blog';
 import { BlogPost } from '@/types/blog';
 import Link from 'next/link';
 import type { Metadata } from 'next';
 import Navigation from '@/components/Navigation';
 import Footer from '@/components/Footer';
 import BackToTop from '@/components/BackToTop';
+import BlogImage from '@/components/blog/BlogImage';
 
 export const metadata: Metadata = {
   title: 'Insights – Aslot Wealth Advisor',
@@ -15,14 +16,9 @@ export const metadata: Metadata = {
 const readingTime = (content: string) =>
   Math.max(1, Math.ceil(content.split(/\s+/).length / 200));
 
-const excerpt = (content: string, max = 160) => {
-  const text = content
-    .replace(/<[^>]+>/g, ' ')
-    .replace(/[#*_`>[\]()]/g, '')
-    .replace(/\s+/g, ' ')
-    .trim();
-  return text.length > max ? `${text.slice(0, max).trimEnd()}…` : text;
-};
+/** `text` is the post body with Markdown already stripped. */
+const excerpt = (text: string, max = 160) =>
+  text.length > max ? `${text.slice(0, max).trimEnd()}…` : text;
 
 const fmtDate = (iso: string) =>
   new Date(iso).toLocaleDateString('en-IN', {
@@ -31,16 +27,8 @@ const fmtDate = (iso: string) =>
     year: 'numeric',
   });
 
-export default async function BlogPage() {
-  const supabase = await createServerSupabaseClient(false);
-
-  const { data: posts } = await supabase
-    .from('posts')
-    .select('*')
-    .eq('active', true)
-    .order('created_at', { ascending: false });
-
-  const list = posts ?? [];
+export default function BlogPage() {
+  const list: BlogPost[] = getAllPosts();
   const [featured, ...rest] = list;
 
   return (
@@ -73,11 +61,12 @@ export default async function BlogPage() {
                     href={`/blog/${featured.id}`}
                     className="group block overflow-hidden lg:col-span-7"
                   >
-                    <img
+                    <BlogImage
                       src={featured.images[0]}
                       alt=""
                       className="aspect-[16/10] w-full bg-surface object-cover transition-transform duration-500 ease-soft group-hover:scale-105"
-                      loading="eager"
+                      sizes="(min-width: 1024px) 58vw, 100vw"
+                      priority
                     />
                   </Link>
                 )}
@@ -86,7 +75,7 @@ export default async function BlogPage() {
                   <p className="meta flex items-center gap-2 text-ink/50">
                     <time dateTime={featured.created_at}>{fmtDate(featured.created_at)}</time>
                     <span aria-hidden>·</span>
-                    <span className="tnum">{readingTime(featured.content)} min read</span>
+                    <span className="tnum">{readingTime(featured.text)} min read</span>
                   </p>
                   <h2 className="h3 mt-3">
                     <Link
@@ -96,14 +85,14 @@ export default async function BlogPage() {
                       {featured.title}
                     </Link>
                   </h2>
-                  <p className="prose-sm-x mt-3 text-ink/65">{excerpt(featured.content)}</p>
+                  <p className="prose-sm-x mt-3 text-ink/65">{excerpt(featured.text)}</p>
                 </div>
               </article>
             )}
 
             {rest.length > 0 && (
               <ul className="mt-16 grid gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
-                {rest.map((post: BlogPost) => (
+                {rest.map((post) => (
                   <li key={post.id} className="group border-t border-border pt-6">
                     {post.images?.[0] && (
                       <Link
@@ -112,18 +101,18 @@ export default async function BlogPage() {
                         tabIndex={-1}
                         aria-hidden
                       >
-                        <img
+                        <BlogImage
                           src={post.images[0]}
                           alt=""
                           className="aspect-[16/10] w-full bg-surface object-cover transition-transform duration-500 ease-soft group-hover:scale-105"
-                          loading="lazy"
+                          sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
                         />
                       </Link>
                     )}
                     <p className="meta flex items-center gap-2 text-ink/50">
                       <time dateTime={post.created_at}>{fmtDate(post.created_at)}</time>
                       <span aria-hidden>·</span>
-                      <span className="tnum">{readingTime(post.content)} min read</span>
+                      <span className="tnum">{readingTime(post.text)} min read</span>
                     </p>
                     <h2 className="h4 mt-3">
                       <Link
@@ -133,7 +122,7 @@ export default async function BlogPage() {
                         {post.title}
                       </Link>
                     </h2>
-                    <p className="prose-sm-x mt-2.5 text-ink/60">{excerpt(post.content, 120)}</p>
+                    <p className="prose-sm-x mt-2.5 text-ink/60">{excerpt(post.text, 120)}</p>
                   </li>
                 ))}
               </ul>

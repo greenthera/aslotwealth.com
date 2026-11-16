@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import { LinkedInIcon } from '@/components/BrandIcons';
 import Reveal from '@/components/motion/Reveal';
 import PragneshImage from '@/assets/teams/Pragnesh Aslot.jpg';
@@ -67,13 +68,13 @@ const AboutSection = () => (
                 className={`team-frame overflow-hidden bg-surface md:col-span-4 ${flipped ? 'md:col-start-9' : ''
                   }`}
               >
-                <img
-                  src={m.image.src}
+                {/* Full width on mobile, a 4-of-12 column (max ~420px) on desktop. */}
+                <Image
+                  src={m.image}
                   alt={`${m.name}, ${m.role ?? 'Aslot Wealth Advisor'}`}
                   className="team-photo aspect-[4/3] w-full object-cover object-top md:aspect-[3/4]"
-                  loading="lazy"
-                  width={640}
-                  height={800}
+                  sizes="(min-width: 768px) 420px, 100vw"
+                  quality={70}
                 />
               </figure>
 

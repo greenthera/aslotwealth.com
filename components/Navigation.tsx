@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useRef, useState } from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Menu, MessageCircle, Phone, X } from 'lucide-react';
@@ -123,12 +124,13 @@ const Navigation = () => {
               }`}
           >
             <Link href="/#home" onClick={go('/#home')} className="flex items-center">
-              <img
-                src={logo.src}
+              {/* Shown at ~40px tall (~137px wide); sizes keeps the download small. */}
+              <Image
+                src={logo}
                 alt="Aslot Wealth Advisor"
                 className={`w-auto transition-[height] duration-250 ${scrolled ? 'h-8' : 'h-10'}`}
-                width={493}
-                height={144}
+                sizes="140px"
+                priority
               />
             </Link>
 
@@ -194,7 +196,7 @@ const Navigation = () => {
       {mobileOpen && (
         <div className="fixed inset-0 z-[70] flex flex-col bg-canvas lg:hidden">
           <div className="container-page flex h-20 shrink-0 items-center justify-between">
-            <img src={logo.src} alt="Aslot Wealth Advisor" className="h-9 w-auto" width={493} height={144} />
+            <Image src={logo} alt="Aslot Wealth Advisor" className="h-9 w-auto" sizes="140px" />
             <button
               type="button"
               onClick={() => setMobileOpen(false)}

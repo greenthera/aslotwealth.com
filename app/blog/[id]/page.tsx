@@ -1,4 +1,4 @@
-import { createServerSupabaseClient } from '@/lib/supabase/server';
+import { getAllPosts, getPost } from '@/lib/blog';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
@@ -7,6 +7,7 @@ import Navigation from '@/components/Navigation';
 import Footer from '@/components/Footer';
 import ShareButton from '@/components/blog/ShareButton';
 import ImageGallery from '@/components/blog/ImageGallery';
+import BlogImage from '@/components/blog/BlogImage';
 import ReadingProgress from '@/components/blog/ReadingProgress';
 import BackToTop from '@/components/BackToTop';
 import { DISCLAIMER_MF } from '@/lib/site';
@@ -25,28 +26,27 @@ const fmtDate = (iso: string) =>
     year: 'numeric',
   });
 
+/**
+ * Every published post is pre-rendered to static HTML at build time.
+ * Unknown slugs and drafts still 404 via notFound() below.
+ * (No `dynamicParams = false`: in dev it breaks client-side navigation —
+ * clicking a post link fails while a full page load works.)
+ */
+export function generateStaticParams() {
+  return getAllPosts().map((post) => ({ id: post.id }));
+}
+
 export default async function BlogPostPage({ params }: BlogPostPageProps) {
   const { id } = await params;
-  const supabase = await createServerSupabaseClient(false);
+  const post = getPost(id);
 
-  const { data: post, error } = await supabase
-    .from('posts')
-    .select('*')
-    .eq('id', id)
-    .eq('active', true)
-    .single();
+  if (!post) notFound();
 
-  if (error || !post) notFound();
+  const related: BlogPost[] = getAllPosts()
+    .filter((p) => p.id !== id)
+    .slice(0, 3);
 
-  const { data: related } = await supabase
-    .from('posts')
-    .select('*')
-    .eq('active', true)
-    .neq('id', id)
-    .order('created_at', { ascending: false })
-    .limit(3);
-
-  const mins = readingTime(post.content);
+  const mins = readingTime(post.text);
 
   return (
     <>
@@ -81,17 +81,22 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
           {post.images && post.images.length > 0 && (
             <div className="container-page mt-12">
-              <img
+              <BlogImage
                 src={post.images[0]}
                 alt={post.title}
                 className="aspect-[21/9] w-full bg-surface object-cover"
-                loading="eager"
+                sizes="(min-width: 1280px) 1200px, 100vw"
+                priority
               />
             </div>
           )}
 
           <div className="container-page mt-12">
-            <div className="article mx-auto max-w-3xl whitespace-pre-wrap">{post.content}</div>
+            {/* HTML comes from our own Markdown renderer, which escapes all text. */}
+            <div
+              className="article mx-auto max-w-3xl"
+              dangerouslySetInnerHTML={{ __html: post.html }}
+            />
 
             {post.images && post.images.length > 1 && (
               <div className="mx-auto mt-16 max-w-3xl">
@@ -118,28 +123,28 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           </div>
         </article>
 
-        {related && related.length > 0 && (
+        {related.length > 0 && (
           <section className="section-y bg-surface">
             <div className="container-page">
               <h2 className="h3 text-forest">Continue reading</h2>
 
               <ul className="mt-10 grid gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
-                {related.map((r: BlogPost) => (
+                {related.map((r) => (
                   <li key={r.id} className="group border-t border-border pt-6">
                     {r.images && r.images.length > 0 && (
                       <div className="mb-5 overflow-hidden">
-                        <img
+                        <BlogImage
                           src={r.images[0]}
                           alt=""
                           className="aspect-[16/10] w-full bg-canvas object-cover transition-transform duration-500 ease-soft group-hover:scale-105"
-                          loading="lazy"
+                          sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
                         />
                       </div>
                     )}
                     <p className="meta flex items-center gap-2 text-ink/50">
                       <time dateTime={r.created_at}>{fmtDate(r.created_at)}</time>
                       <span aria-hidden>·</span>
-                      <span className="tnum">{readingTime(r.content)} min read</span>
+                      <span className="tnum">{readingTime(r.text)} min read</span>
                     </p>
                     <h3 className="h4 mt-3">
                       <Link

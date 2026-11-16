@@ -34,18 +34,18 @@ const HeroSection = () => (
             ))}
           </h1>
 
-          <p className="lede measure mt-8 text-ink/70 hero-el" style={{ ['--d' as string]: '500ms' }}>
+          <p className="lede measure mt-8 text-ink/70 hero-el" style={{ ['--d' as string]: '100ms' }}>
             We design investment roadmaps that stay relevant throughout the decades — funding
             milestones, preserving wealth, and managing risk.
           </p>
 
           <div className="mt-9 flex flex-col gap-3 sm:flex-row">
-            <span className="hero-el" style={{ ['--d' as string]: '700ms' }}>
+            <span className="hero-el" style={{ ['--d' as string]: '180ms' }}>
               <Button variant="cta" size="lg" className="w-full sm:w-auto" asChild>
                 <Link href="#contact">Schedule Discovery Call</Link>
               </Button>
             </span>
-            <span className="hero-el" style={{ ['--d' as string]: '780ms' }}>
+            <span className="hero-el" style={{ ['--d' as string]: '240ms' }}>
               <Button variant="outline" size="lg" className="w-full sm:w-auto" asChild>
                 <a href={WA_DEFAULT} target="_blank" rel="noopener noreferrer">
                   <MessageCircle className="transition-transform duration-150 group-hover/btn:-rotate-[8deg]" />

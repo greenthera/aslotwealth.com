@@ -1,13 +1,7 @@
-"use client";
 import Navigation from '@/components/Navigation';
 import Footer from '@/components/Footer';
-import { useEffect } from 'react';
 
 const TermsOfServicePage = () => {
-    useEffect(() => {
-        window.scrollTo(0, 0);
-    }, []);
-
     return (
         <div className="min-h-screen bg-background">
             <Navigation />

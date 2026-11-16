@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { X, ChevronLeft, ChevronRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import BlogImage from '@/components/blog/BlogImage'
 
 interface ImageGalleryProps {
   images: string[]
@@ -66,10 +67,11 @@ export default function ImageGallery({ images, title, thumbnailStartIndex = 0 }:
             onClick={() => openGallery(index)}
             className="relative rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-300 aspect-[4/3] group cursor-pointer"
           >
-            <img
+            <BlogImage
               src={image}
               alt={`${title} - Image ${index + thumbnailStartIndex + 1}`}
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+              sizes="(min-width: 768px) 384px, 100vw"
             />
             <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300 flex items-center justify-center">
               <span className="text-white opacity-0 group-hover:opacity-100 transition-opacity text-sm font-semibold">

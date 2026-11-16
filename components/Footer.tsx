@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import Link from 'next/link';
 import { InstagramIcon, LinkedInIcon } from '@/components/BrandIcons';
 import logo from '@/assets/images/footer_logo.png';
@@ -23,12 +24,11 @@ const Footer = () => (
     <div className="container-page py-16 md:py-20">
       <div className="grid gap-y-12 md:grid-cols-12 md:gap-x-12">
         <div className="md:col-span-5">
-          <img
-            src={logo.src}
+          <Image
+            src={logo}
             alt="Aslot Wealth Advisor"
             className="h-11 w-auto brightness-0 invert"
-            width={493}
-            height={144}
+            sizes="160px"
           />
           <p className="prose-sm-x measure-tight mt-5 text-white/65">
             Personalised, Purpose-Driven Portfolios Built for the Long Run

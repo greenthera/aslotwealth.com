@@ -1,19 +1,17 @@
 # Aslot Wealth
 
-A    modern wealth management website built with Next.js, featuring a blog and admin dashboard.
+A modern wealth management website built with Next.js, with a Markdown-powered blog.
 
 ## Features
 
-- **Blog System**: Create, update, and manage blog posts
-- **Admin Dashboard**: Secure admin panel for content management
-- **Authentication**: User login/logout with Supabase
-- **Image Upload**: Cloud-based image storage
-- **Responsive Design**: Built with Tailwind CSS
+- **Blog**: posts are Markdown files in `content/blog/`, pre-rendered to static pages
+- **No database or login needed**: everything is built at build time
+- **Responsive Design**: built with Tailwind CSS
 
 ## Tech Stack
 
 - **Frontend**: Next.js, TypeScript, Tailwind CSS
-- **Backend**: Supabase (Database & Auth)
+- **Content**: Markdown files (no CMS, no database)
 - **Deployment**: Vercel (recommended)
 
 ## Getting Started
@@ -21,49 +19,50 @@ A    modern wealth management website built with Next.js, featuring a blog and a
 ### Prerequisites
 
 - Node.js 18+
-- Supabase account
 
 ### Installation
 
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/yourusername/aslot-wealth.git
-   cd aslot-wealth
-   ```
-
-2. Install dependencies:
+1. Install dependencies:
    ```bash
    npm install
    ```
 
-3. Set up environment variables:
-   Create a `.env.local` file with your Supabase credentials:
-   ```
-   NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
-   NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
-   SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
-   ```
-
-4. Run the development server:
+2. Run the development server:
    ```bash
    npm run dev
    ```
 
-5. Open [http://localhost:3000](http://localhost:3000) in your browser.
+3. Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-## Usage
+No environment variables are required.
 
-- Visit the homepage to explore the website
-- Access `/admin/login` for admin panel
-- Use the dashboard to manage blog posts
+## Writing a blog post
 
-## Contributing
+1. Copy `content/blog/_template.md` to a new file, e.g. `content/blog/my-new-post.md`.
+   The file name becomes the URL: `/blog/my-new-post`.
+2. Fill in the front matter at the top:
+   ```md
+   ---
+   title: My New Post
+   date: 2026-11-16
+   images:
+     - /blog/my-cover.jpg
+   draft: false
+   ---
+   ```
+   - `images`: the first image is the cover, any others appear in a gallery.
+     Put local images in `public/blog/` and reference them as `/blog/<file>`.
+   - `draft: true` hides the post.
+3. Write the post in Markdown below the front matter: `##` headings, `**bold**`,
+   `*italic*`, `[links](url)`, `- lists`, `1. lists`, `> quotes`, `![images](url)`.
+4. With `npm run dev` running, refresh the page to see it. For the live site, rebuild
+   and redeploy. Posts are sorted newest first, by `date`.
 
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Submit a pull request
+Files whose name starts with `_` are never published.
 
-## License
+## Production build
 
-This project is licensed under the MIT License.
+```bash
+npm run build
+npm start
+```

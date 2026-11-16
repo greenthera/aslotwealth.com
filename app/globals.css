@@ -334,20 +334,28 @@
   margin-bottom: -0.08em;
 }
 
+/* The headline is the page's Largest Contentful Paint, so it must be visible
+   from the first frame. The old version slid each line up from behind a mask
+   (hidden until it arrived), which delayed LCP by up to ~1s.
+
+   Now each line is fully visible at once and only settles a few pixels into
+   place, staggered by --d. Transform only — never opacity — so LCP is not
+   delayed. Reduced motion: the global rule above zeroes the duration. */
 .hero-line-in {
   display: block;
-  animation: hero-line-up 700ms var(--ease-out-soft) var(--d, 0ms) both;
+  animation: hero-line-settle 900ms var(--ease-out-soft) var(--d, 0ms) both;
 }
 
-@keyframes hero-line-up {
+@keyframes hero-line-settle {
   from {
-    transform: translateY(100%);
+    transform: translateY(0.18em);
   }
 
   to {
     transform: translateY(0);
   }
 }
+
 
 .hero-el {
   display: block;
@@ -477,6 +485,40 @@
   padding-left: 1.2em;
   margin-block: 1.8em;
   color: hsl(var(--ink) / 0.7);
+}
+
+/* Markdown extras: rules, inline images and code. */
+.article hr {
+  border: 0;
+  border-top: 1px solid hsl(var(--border));
+  margin-block: 2.5em;
+}
+
+.article img {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin-block: 2em;
+}
+
+.article code {
+  font-size: 0.9em;
+  padding: 0.1em 0.35em;
+  background: hsl(var(--ink) / 0.06);
+}
+
+.article pre {
+  overflow-x: auto;
+  margin-block: 1.8em;
+  padding: 1em 1.2em;
+  background: hsl(var(--ink) / 0.06);
+  font-size: var(--step-sm);
+  line-height: 1.6;
+}
+
+.article pre code {
+  padding: 0;
+  background: none;
 }
 
 /* Comparison tables scroll rather than break the layout. */

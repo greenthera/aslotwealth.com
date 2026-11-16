@@ -102,9 +102,23 @@ const Footer = () => (
       {/* COMPLIANCE BLOCK — editable, legible, never grey micro-text. */}
       <div className="mt-8 space-y-3">
         <p className="meta measure text-white/70">{DISCLAIMER_MF}</p>
-        <p className="meta pt-3 text-white/65">
-          © <span className="tnum">2026</span> Aslot Wealth Advisor. All rights reserved.
-        </p>
+        <div className="flex flex-col gap-2 pt-3 sm:flex-row sm:items-center sm:justify-between">
+          <p className="meta text-white/65">
+            © <span className="tnum">2026</span> Aslot Wealth Advisor. All rights reserved.
+          </p>
+          {/* Development credit */}
+          <p className="meta text-white/65">
+            Developed by{' '}
+            <a
+              href="https://shivantra.com/?utm_source=aslotwealth.com&utm_medium=referral&utm_campaign=client_footer"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-white/85 underline-offset-4 transition-colors duration-150 hover:text-white hover:underline"
+            >
+              Shivantra
+            </a>
+          </p>
+        </div>
       </div>
     </div>
   </footer>

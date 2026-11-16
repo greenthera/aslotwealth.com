@@ -7,6 +7,7 @@
 # Usage:  npm run deploy
 #         (or)  bash scripts/deploy-gh-pages.sh <repo-git-url>
 #         DRY_RUN=1 npm run deploy   → build only, no push (prints output folder)
+#         DEPLOY_MESSAGE="Add new blog post" npm run deploy   → custom commit message
 #
 # - Builds from your current files (including uncommitted changes).
 # - Builds in a temporary folder: your ./.next, a running `npm run dev`,
@@ -76,10 +77,11 @@ echo "▸ Publishing to gh-pages…"
 cd "$OUT"
 git init -q -b gh-pages
 git add -A
-SRC_REV="$(git -C "$ROOT" rev-parse --short HEAD 2>/dev/null || echo local)"
+# Commit message shown on the gh-pages branch. Default "Updated";
+# custom: DEPLOY_MESSAGE="Add new blog post" npm run deploy
 git -c user.name="$(git -C "$ROOT" config user.name || echo deploy)" \
     -c user.email="$(git -C "$ROOT" config user.email || echo deploy@localhost)" \
-    commit -q -m "Deploy from ${SRC_REV} at $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+    commit -q -m "${DEPLOY_MESSAGE:-Updated}"
 git push -f "$REPO_URL" gh-pages
 
 echo ""

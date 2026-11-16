@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Plus_Jakarta_Sans, Cormorant_Garamond } from "next/font/google";
 import "./globals.css";
+import { withBasePath } from "@/lib/basePath";
 
 /* Two families, two roles. Limited weights keep the payload small on
    Indian mobile networks; next/font self-hosts and preloads both. */
@@ -30,16 +31,17 @@ export const metadata: Metadata = {
     "A family wealth practice in Surat since 1989. Goal-aligned portfolios built for the long run. ₹75 crore+ AUM, 250+ clients, 99% retention.",
   authors: [{ name: "Aslot Wealth Advisor" }],
   alternates: { canonical: "/" },
+  // withBasePath() is a no-op except on a GitHub Pages build at /<repo>/.
   icons: {
     icon: [
-      { url: "/favicon.ico", sizes: "any" },
-      { url: "/favicon.svg", type: "image/svg+xml" },
-      { url: "/favicon-96x96.png", sizes: "96x96", type: "image/png" },
+      { url: withBasePath("/favicon.ico"), sizes: "any" },
+      { url: withBasePath("/favicon.svg"), type: "image/svg+xml" },
+      { url: withBasePath("/favicon-96x96.png"), sizes: "96x96", type: "image/png" },
     ],
-    apple: [{ url: "/apple-touch-icon.png", sizes: "180x180" }],
+    apple: [{ url: withBasePath("/apple-touch-icon.png"), sizes: "180x180" }],
   },
   appleWebApp: { title: "Aslot" },
-  manifest: "/site.webmanifest",
+  manifest: withBasePath("/site.webmanifest"),
   openGraph: {
     title: "Aslot Wealth Advisor – Personalised Investment Management",
     description:

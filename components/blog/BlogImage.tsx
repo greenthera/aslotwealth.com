@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import { withBasePath } from '@/lib/basePath';
 
 /**
  * Blog image that is resized + converted to AVIF/WebP by Next.js.
@@ -19,8 +20,11 @@ type Props = {
   priority?: boolean;
 };
 
-export default function BlogImage({ src, alt, className, sizes, priority = false }: Props) {
-  if (!OPTIMIZABLE.test(src)) {
+export default function BlogImage({ src: rawSrc, alt, className, sizes, priority = false }: Props) {
+  // Local paths need the GitHub Pages prefix; next/image does not add it to string srcs.
+  const src = withBasePath(rawSrc);
+
+  if (!OPTIMIZABLE.test(rawSrc)) {
     return (
       // eslint-disable-next-line @next/next/no-img-element
       <img

@@ -66,3 +66,24 @@ Files whose name starts with `_` are never published.
 npm run build
 npm start
 ```
+
+## Deploy to GitHub Pages (branch, no Actions)
+
+```bash
+npm run deploy             # build + push to the gh-pages branch
+DRY_RUN=1 npm run deploy   # build only, nothing pushed
+```
+
+This builds a static copy of the site in a temporary folder and force-pushes
+it to the `gh-pages` branch of `github.com/greenthera/aslotwealth.com`
+(change the URL in `package.json` → `scripts.deploy` to use another repo).
+
+One-time setup in GitHub: **Settings → Pages → Build and deployment →
+Source: Deploy from a branch → Branch: `gh-pages` / `(root)` → Save.**
+
+- Without a custom domain the site is served at
+  `https://greenthera.github.io/aslotwealth.com/` (the script adds that path prefix automatically).
+- To use `www.aslotwealth.com`: create `public/CNAME` containing `www.aslotwealth.com`,
+  run `npm run deploy` again, set the domain in Settings → Pages, and point the
+  domain's DNS to GitHub Pages. The path prefix is then removed automatically.
+- Static hosting cannot run server code, so `app/api/*` routes are not included in this build.

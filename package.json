@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "deploy": "bash scripts/deploy-gh-pages.sh https://github.com/greenthera/aslotwealth.com.git"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.14",

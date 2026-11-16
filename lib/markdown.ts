@@ -12,6 +12,8 @@
  * All text is HTML-escaped, so raw HTML in a post is shown as text, not run.
  */
 
+import { withBasePath } from '@/lib/basePath';
+
 const escapeHtml = (s: string) =>
   s
     .replace(/&/g, '&amp;')
@@ -20,10 +22,10 @@ const escapeHtml = (s: string) =>
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#39;');
 
-/** Only allow safe link targets (no javascript: etc.). */
+/** Only allow safe link targets (no javascript: etc.). Local paths get the base path. */
 const safeUrl = (url: string) => {
   const u = url.trim();
-  return /^(https?:\/\/|mailto:|tel:|\/|#)/i.test(u) ? u : '#';
+  return /^(https?:\/\/|mailto:|tel:|\/|#)/i.test(u) ? withBasePath(u) : '#';
 };
 
 function inline(text: string): string {

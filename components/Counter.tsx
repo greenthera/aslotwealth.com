@@ -54,13 +54,17 @@ const Counter = ({ value, prefix = '', suffix = '', label, className }: Props) =
     return () => observer.disconnect();
   }, [value]);
 
+  // aria-label is not allowed on a plain <span>, so screen readers (and AI
+  // agents) get the full phrase as visually hidden text; the animating
+  // number is hidden from them so it is never read mid-count.
   return (
-    <span ref={ref} className={className} aria-label={label}>
+    <span ref={ref} className={className}>
       <span aria-hidden="true" className="tnum">
         {prefix}
         {display ?? value}
         {suffix}
       </span>
+      <span className="sr-only">{label}</span>
     </span>
   );
 };

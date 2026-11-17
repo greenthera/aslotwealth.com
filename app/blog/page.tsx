@@ -46,7 +46,7 @@ export default function BlogPage() {
             {list.length === 0 && (
               <p className="lede measure mt-8 text-ink/60">
                 New writing is on the way. In the meantime,{' '}
-                <Link href="/#contact" className="text-growth underline underline-offset-4">
+                <Link href="/#contact" prefetch={false} className="text-growth underline underline-offset-4">
                   book a portfolio review
                 </Link>
                 .
@@ -72,7 +72,7 @@ export default function BlogPage() {
                 )}
 
                 <div className={featured.images?.[0] ? 'lg:col-span-5' : 'lg:col-span-8'}>
-                  <p className="meta flex items-center gap-2 text-ink/50">
+                  <p className="meta flex items-center gap-2 text-ink/70">
                     <time dateTime={featured.created_at}>{fmtDate(featured.created_at)}</time>
                     <span aria-hidden>·</span>
                     <span className="tnum">{readingTime(featured.text)} min read</span>
@@ -109,7 +109,7 @@ export default function BlogPage() {
                         />
                       </Link>
                     )}
-                    <p className="meta flex items-center gap-2 text-ink/50">
+                    <p className="meta flex items-center gap-2 text-ink/70">
                       <time dateTime={post.created_at}>{fmtDate(post.created_at)}</time>
                       <span aria-hidden>·</span>
                       <span className="tnum">{readingTime(post.text)} min read</span>

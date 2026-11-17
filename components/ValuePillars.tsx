@@ -41,14 +41,19 @@ const ValuePillars = () => (
       </Reveal>
 
       <dl className="mt-16 grid gap-x-14 gap-y-12 sm:grid-cols-2">
+        {/* A <dl> may hold only ONE <div> level around each <dt>/<dd> pair,
+            so the border lives on the Reveal wrapper itself (no inner div). */}
         {PILLARS.map((p, i) => (
-          <Reveal key={p.title} as="div" delay={(i % 2) * 80}>
-            <div className="border-t border-forest/25 pt-6">
-              <dt className="h3 text-forest">{p.title}</dt>
-              <dd className="mt-4 max-w-[38ch] text-[1.0625rem] leading-[1.7] text-ink/65">
-                {p.body}
-              </dd>
-            </div>
+          <Reveal
+            key={p.title}
+            as="div"
+            delay={(i % 2) * 80}
+            className="border-t border-forest/25 pt-6"
+          >
+            <dt className="h3 text-forest">{p.title}</dt>
+            <dd className="mt-4 max-w-[38ch] text-[1.0625rem] leading-[1.7] text-ink/65">
+              {p.body}
+            </dd>
           </Reveal>
         ))}
       </dl>

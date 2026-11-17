@@ -7,6 +7,7 @@ import HeroSection from '@/components/HeroSection';
 import JourneySection from '@/components/JourneySection';
 import Navigation from '@/components/Navigation';
 import ProcessSection from '@/components/ProcessSection';
+import SectionScroll from '@/components/SectionScroll';
 import StatsBar from '@/components/StatsBar';
 import ValuePillars from '@/components/ValuePillars';
 
@@ -40,6 +41,8 @@ export default function HomeClient({ children }: { children?: React.ReactNode })
 
       <Footer />
       <BackToTop />
+      {/* Section links scroll without leaving "#…" in the address bar. */}
+      <SectionScroll />
     </>
   );
 }

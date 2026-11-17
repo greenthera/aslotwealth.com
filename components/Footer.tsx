@@ -61,7 +61,8 @@ const Footer = () => (
           <ul className="mt-4 space-y-2.5">
             {QUICK.map((l) => (
               <li key={l.href}>
-                <Link href={l.href} className="prose-sm-x text-white/65 hover:text-white">
+                {/* Homepage-section links: no prefetch (see Navigation). */}
+                <Link href={l.href} prefetch={false} className="prose-sm-x text-white/65 hover:text-white">
                   {l.label}
                 </Link>
               </li>
@@ -113,7 +114,7 @@ const Footer = () => (
               href="https://shivantra.com/?utm_source=aslotwealth.com&utm_medium=referral&utm_campaign=client_footer"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-white/85 underline-offset-4 transition-colors duration-150 hover:text-white hover:underline"
+              className="text-white/85 underline underline-offset-4 transition-colors duration-150 hover:text-white"
             >
               Shivantra
             </a>

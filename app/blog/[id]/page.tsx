@@ -59,13 +59,13 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             <div className="mx-auto max-w-3xl">
               <Link
                 href="/blog"
-                className="meta inline-flex items-center gap-2 text-ink/55 transition-colors duration-150 hover:text-forest"
+                className="meta inline-flex items-center gap-2 text-ink/70 transition-colors duration-150 hover:text-forest"
               >
                 <ArrowLeft size={15} />
                 All insights
               </Link>
 
-              <p className="meta mt-8 flex items-center gap-2 text-ink/50">
+              <p className="meta mt-8 flex items-center gap-2 text-ink/70">
                 <time dateTime={post.created_at}>{fmtDate(post.created_at)}</time>
                 <span aria-hidden>·</span>
                 <span className="tnum">{mins} min read</span>
@@ -113,8 +113,8 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
             {/* COMPLIANCE BLOCK */}
             <div className="mx-auto mt-16 max-w-3xl border-t border-border pt-8">
-              <p className="meta text-ink/55">{DISCLAIMER_MF}</p>
-              <p className="meta mt-2 text-ink/55">
+              <p className="meta text-ink/70">{DISCLAIMER_MF}</p>
+              <p className="meta mt-2 text-ink/70">
                 Past performance does not guarantee future results. Market-linked debentures
                 carry issuer credit risk; capital protection applies only at maturity and is
                 subject to the issuer meeting its obligations.
@@ -141,7 +141,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                         />
                       </div>
                     )}
-                    <p className="meta flex items-center gap-2 text-ink/50">
+                    <p className="meta flex items-center gap-2 text-ink/70">
                       <time dateTime={r.created_at}>{fmtDate(r.created_at)}</time>
                       <span aria-hidden>·</span>
                       <span className="tnum">{readingTime(r.text)} min read</span>

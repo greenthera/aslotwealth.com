@@ -102,6 +102,11 @@ const Navigation = () => {
     return () => document.removeEventListener('keydown', onKey);
   }, []);
 
+  /* Section links ("/#about") use prefetch={false}: in the GitHub Pages build
+     (static export + base path) Next prefetches the homepage from a wrong URL,
+     which logs a 404 in the console. The homepage is static, so it loads fast
+     without prefetch. The "#…" never stays in the address bar — on the
+     homepage this handler scrolls instead, and SectionScroll strips it. */
   const go = useCallback(
     (href: string) => (e: React.MouseEvent) => {
       setMobileOpen(false);
@@ -123,7 +128,7 @@ const Navigation = () => {
             className={`flex items-center justify-between gap-6 transition-[height] duration-250 ease-soft-io ${scrolled ? 'h-16' : 'h-20'
               }`}
           >
-            <Link href="/#home" onClick={go('/#home')} className="flex items-center">
+            <Link prefetch={false} href="/#home" onClick={go('/#home')} className="flex items-center">
               {/* Shown at ~40px tall (~137px wide); sizes keeps the download small. */}
               <Image
                 src={logo}
@@ -136,7 +141,7 @@ const Navigation = () => {
 
             <nav className="relative hidden items-center gap-8 lg:flex" aria-label="Main">
               {NAV_LINKS.map((l) => (
-                <Link
+                <Link prefetch={false}
                   key={l.href}
                   ref={(el) => {
                     linkRefs.current[l.href] = el;
@@ -174,7 +179,7 @@ const Navigation = () => {
                 <MessageCircle size={17} />
               </a>
               <Button variant="cta" asChild>
-                <Link href="/#contact" onClick={go('/#contact')}>
+                <Link prefetch={false} href="/#contact" onClick={go('/#contact')}>
                   Schedule a Call
                 </Link>
               </Button>
@@ -210,7 +215,7 @@ const Navigation = () => {
 
           <nav className="container-page flex-1 overflow-y-auto" aria-label="Mobile">
             {NAV_LINKS.map((l) => (
-              <Link
+              <Link prefetch={false}
                 key={l.href}
                 href={l.href}
                 onClick={go(l.href)}
@@ -223,7 +228,7 @@ const Navigation = () => {
 
           <div className="container-page shrink-0 border-t border-border py-5">
             <Button variant="cta" size="lg" className="w-full" asChild>
-              <Link href="/#contact" onClick={go('/#contact')}>
+              <Link prefetch={false} href="/#contact" onClick={go('/#contact')}>
                 Schedule a Call
               </Link>
             </Button>

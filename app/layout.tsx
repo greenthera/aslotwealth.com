@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Plus_Jakarta_Sans, Cormorant_Garamond } from "next/font/google";
 import "./globals.css";
 import { withBasePath } from "@/lib/basePath";
+import { GoogleTagManagerScript, GoogleTagManagerNoScript } from "@/components/GoogleTagManager";
 
 /* Two families, two roles. Limited weights keep the payload small on
    Indian mobile networks; next/font self-hosts and preloads both. */
@@ -139,7 +140,11 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en-IN">
+      <head>
+        <GoogleTagManagerScript />
+      </head>
       <body className={`${sans.variable} ${cormorant.variable} antialiased`}>
+        <GoogleTagManagerNoScript />
         {children}
 
         <script

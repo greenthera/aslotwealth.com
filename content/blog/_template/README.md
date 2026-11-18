@@ -8,6 +8,9 @@
 #    Folders starting with "_" (like this one) are never published.
 title: Your Post Title Here
 date: 2026-11-18
+# Optional: when you later edit the post, set this so sitemap.xml tells
+# search engines it changed (otherwise "date" is used).
+# updated: 2026-12-01
 # First image = cover (top of the post + blog list). Extra images = gallery.
 # Remove the "images" lines entirely for a post without a cover.
 images:

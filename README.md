@@ -71,6 +71,13 @@ content/blog/
    `- lists`, `1. lists`, `> quotes`, and links to files in the folder (`[PDF](report.pdf)`).
 4. Run `npm run dev` and open `/blog/my-new-post`. Posts are sorted newest first by `date`.
 
+**Sitemap:** `/sitemap.xml` is rebuilt on every `npm run build` / `npm run deploy`.
+It finds every page in `app/` and every published post in `content/blog/`
+automatically, so new pages and posts are included with no manual edit.
+Drafts, `_template` and old redirected slugs are left out. When you edit an existing
+post, add `updated: YYYY-MM-DD` to its front matter so the sitemap shows the
+change. (`robots.txt` already points search engines to the sitemap.)
+
 **Renaming a post?** Rename its folder, then list the old name in the front matter
 so links that were already shared keep working (they redirect to the new URL):
 ```md

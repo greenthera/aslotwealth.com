@@ -41,6 +41,15 @@ const LISTS_POSTS = new Set(['/', '/blog']);
 const PAGE_FILE = /^page\.(tsx|ts|jsx|js|mdx)$/;
 
 /**
+ * The GitHub Pages build uses trailingSlash (next.config.ts), so /blog is
+ * served at /blog/ and /blog answers with a 301. List the exact URL each build
+ * serves, so every sitemap entry returns 200 without a redirect.
+ */
+const TRAILING_SLASH = process.env.GITHUB_PAGES === 'true';
+const toUrl = (route: string) =>
+  `${SITE_URL}${route === '/' ? '/' : TRAILING_SLASH ? `${route}/` : route}`;
+
+/**
  * Every static page route under app/. Skips:
  *  - api/ and private folders ("_x"), parallel routes ("@x")
  *  - dynamic segments ("[id]") — blog posts are added from content/ instead
@@ -68,7 +77,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const newestPost = posts.length ? latest(...posts.map((p) => p.updated_at)) : PAGES_UPDATED;
 
   const page = (route: string): MetadataRoute.Sitemap[number] => ({
-    url: `${SITE_URL}${route}`,
+    url: toUrl(route),
     lastModified: new Date(LISTS_POSTS.has(route) ? latest(PAGES_UPDATED, newestPost) : PAGES_UPDATED),
     ...(PAGE_HINTS[route] ?? DEFAULT_HINT),
   });
@@ -81,7 +90,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   return [
     ...listing.map(page),
     ...posts.map((post) => ({
-      url: `${SITE_URL}/blog/${post.id}`,
+      url: toUrl(`/blog/${post.id}`),
       lastModified: new Date(post.updated_at),
       changeFrequency: 'monthly' as const,
       priority: 0.7,

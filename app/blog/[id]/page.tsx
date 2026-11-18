@@ -1,5 +1,5 @@
-import { getAllPosts, getPost } from '@/lib/blog';
-import { notFound } from 'next/navigation';
+import { getAllPosts, getPost, getRedirects } from '@/lib/blog';
+import { notFound, permanentRedirect } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
 import { BlogPost } from '@/types/blog';
@@ -33,14 +33,24 @@ const fmtDate = (iso: string) =>
  * clicking a post link fails while a full page load works.)
  */
 export function generateStaticParams() {
-  return getAllPosts().map((post) => ({ id: post.id }));
+  return [
+    ...getAllPosts().map((post) => ({ id: post.id })),
+    // Old slugs (redirect_from) get a page too, which forwards to the new URL.
+    ...[...getRedirects().keys()].map((id) => ({ id })),
+  ];
 }
 
 export default async function BlogPostPage({ params }: BlogPostPageProps) {
   const { id } = await params;
   const post = getPost(id);
 
-  if (!post) notFound();
+  if (!post) {
+    // Renamed post: send old links to the new URL (permanent, so search
+    // engines move the ranking over). Static builds emit a redirect page.
+    const target = getRedirects().get(id);
+    if (target) permanentRedirect(`/blog/${target}`);
+    notFound();
+  }
 
   const related: BlogPost[] = getAllPosts()
     .filter((p) => p.id !== id)

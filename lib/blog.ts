@@ -5,23 +5,31 @@ import type { BlogPost } from '@/types/blog';
 import { markdownToHtml, markdownToText } from '@/lib/markdown';
 
 /**
- * Blog posts live as Markdown files in /content/blog.
+ * Each blog post is a folder in /content/blog. The folder name is the slug:
  *
- *   content/blog/<slug>.md   →   /blog/<slug>
+ *   content/blog/<slug>/README.md      →  /blog/<slug>
+ *   content/blog/<slug>/image1.png     →  /blog/<slug>/image1.png
  *
- * Each file starts with a front-matter block:
+ * README.md starts with a front-matter block:
  *
  *   ---
  *   title: Why Starting a SIP Early Beats Timing the Market
  *   date: 2026-11-14
  *   images:
- *     - /blog/sip-cover.jpg
+ *     - image1.png        ← cover (first) + gallery (rest), relative to the folder
  *   draft: false
  *   ---
  *
- * Files starting with "_" (e.g. _template.md) are ignored.
+ * In the body, use the same relative names: ![Chart](image2.png). Images can be
+ * used as often as you like. scripts/sync-blog-assets.mjs copies them to
+ * /public/blog/<slug>/ so the site can serve them.
+ *
+ * Folders starting with "_" or "." (e.g. _template) are never published.
  */
-const BLOG_DIR = path.join(process.cwd(), 'content', 'blog');
+export const BLOG_DIR = path.join(process.cwd(), 'content', 'blog');
+
+/** Accepted names for a post's Markdown file (case-insensitive). */
+const POST_FILES = ['readme.md', 'index.md'];
 
 type FrontMatter = Record<string, string | string[] | boolean>;
 
@@ -81,13 +89,30 @@ const toIso = (value: unknown, fallback: Date) => {
   return Number.isNaN(d.getTime()) ? fallback.toISOString() : d.toISOString();
 };
 
-function readPost(fileName: string): BlogPost {
-  const fullPath = path.join(BLOG_DIR, fileName);
-  const raw = fs.readFileSync(fullPath, 'utf8');
-  const { data, body } = parseFrontMatter(raw);
-  const stat = fs.statSync(fullPath);
+/**
+ * "image1.png" / "./img/a.png" → "/blog/<slug>/image1.png".
+ * Absolute URLs ("https://…") and site paths ("/…") are left as written.
+ */
+export const postAssetUrl = (slug: string, src: string) => {
+  const s = src.trim();
+  if (/^([a-z][a-z0-9+.-]*:|\/|#)/i.test(s)) return s;
+  const clean = path.posix.normalize(s.replace(/^\.\//, ''));
+  if (clean.startsWith('..')) return '#'; // never point outside the post folder
+  return `/blog/${slug}/${clean.split('/').map(encodeURIComponent).join('/')}`;
+};
 
-  const images = Array.isArray(data.images)
+/** The post's Markdown file inside its folder, or null if it has none. */
+function findPostFile(dir: string): string | null {
+  const name = fs.readdirSync(dir).find((f) => POST_FILES.includes(f.toLowerCase()));
+  return name ? path.join(dir, name) : null;
+}
+
+function readPost(slug: string, file: string): BlogPost {
+  const raw = fs.readFileSync(file, 'utf8');
+  const { data, body } = parseFrontMatter(raw);
+  const stat = fs.statSync(file);
+
+  const rawImages = Array.isArray(data.images)
     ? data.images
     : typeof data.images === 'string' && data.images
       ? [data.images]
@@ -96,30 +121,64 @@ function readPost(fileName: string): BlogPost {
   const created = toIso(data.date, stat.mtime);
   const content = body.trim();
 
+  const redirectFrom = (Array.isArray(data.redirect_from)
+    ? data.redirect_from
+    : typeof data.redirect_from === 'string' && data.redirect_from
+      ? [data.redirect_from]
+      : []
+  )
+    .map((s) => s.trim().replace(/^\/?blog\//, '').replace(/^\/|\/$/g, ''))
+    .filter(Boolean);
+
   return {
-    id: fileName.replace(/\.md$/, ''),
-    title: typeof data.title === 'string' ? data.title : fileName.replace(/\.md$/, ''),
+    id: slug,
+    title: typeof data.title === 'string' ? data.title : slug,
     content,
     text: markdownToText(content),
-    html: markdownToHtml(content),
-    images,
+    html: markdownToHtml(content, { resolveRelative: (src) => postAssetUrl(slug, src) }),
+    images: rawImages.map((src) => postAssetUrl(slug, src)),
     active: data.draft !== true,
+    redirectFrom,
     created_at: created,
     updated_at: toIso(data.updated, new Date(created)),
   };
 }
 
-/** All published posts, newest first. Cached per request/build. */
-export const getAllPosts = cache((): BlogPost[] => {
+/** Post folders: content/blog/<slug>/ that contain a README.md (not "_" or "."). */
+export function listPostFolders(): { slug: string; dir: string; file: string }[] {
   if (!fs.existsSync(BLOG_DIR)) return [];
-
   return fs
-    .readdirSync(BLOG_DIR)
-    .filter((f) => f.endsWith('.md') && !f.startsWith('_'))
-    .map(readPost)
+    .readdirSync(BLOG_DIR, { withFileTypes: true })
+    .filter((d) => d.isDirectory() && !d.name.startsWith('_') && !d.name.startsWith('.'))
+    .map((d) => {
+      const dir = path.join(BLOG_DIR, d.name);
+      return { slug: d.name, dir, file: findPostFile(dir) };
+    })
+    .filter((p): p is { slug: string; dir: string; file: string } => p.file !== null);
+}
+
+/** All published posts, newest first. Cached per request/build. */
+export const getAllPosts = cache((): BlogPost[] =>
+  listPostFolders()
+    .map(({ slug, file }) => readPost(slug, file))
     .filter((p) => p.active)
-    .sort((a, b) => b.created_at.localeCompare(a.created_at));
-});
+    .sort((a, b) => b.created_at.localeCompare(a.created_at)),
+);
 
 export const getPost = (slug: string): BlogPost | undefined =>
   getAllPosts().find((p) => p.id === slug);
+
+/**
+ * Old slug → current slug, from each post's `redirect_from`. Lets a post be
+ * renamed without breaking links that were already shared or indexed.
+ * A real post folder always wins over a redirect with the same name.
+ */
+export const getRedirects = (): Map<string, string> => {
+  const posts = getAllPosts();
+  const live = new Set(posts.map((p) => p.id));
+  const map = new Map<string, string>();
+  for (const p of posts) {
+    for (const from of p.redirectFrom) if (!live.has(from)) map.set(from, p.id);
+  }
+  return map;
+};

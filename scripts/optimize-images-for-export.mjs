@@ -27,14 +27,30 @@ const JOBS = [
   ['assets/images/footer_logo.png', 360],
 ];
 
+// Blog images (copied from content/blog/<slug>/ by sync-blog-assets.mjs).
+// 1600px covers the widest blog image (~1200px column) on high-DPI screens.
+const walk = (d) =>
+  fs.existsSync(d)
+    ? fs.readdirSync(d, { withFileTypes: true }).flatMap((e) =>
+        e.isDirectory() ? walk(path.join(d, e.name)) : [path.join(d, e.name)],
+      )
+    : [];
+for (const file of walk(path.join(dir, 'public', 'blog'))) {
+  if (/\.(png|jpe?g|webp)$/i.test(file)) JOBS.push([path.relative(dir, file), 1600]);
+}
+
 for (const [rel, width] of JOBS) {
   const file = path.join(dir, rel);
   if (!fs.existsSync(file)) continue;
   const before = fs.statSync(file).size;
   const img = sharp(fs.readFileSync(file)).resize({ width, withoutEnlargement: true });
-  const out = rel.endsWith('.png')
-    ? await img.png({ palette: true, quality: 90, compressionLevel: 9 }).toBuffer()
-    : await img.jpeg({ quality: 72, mozjpeg: true }).toBuffer();
+  const ext = path.extname(rel).toLowerCase();
+  const out =
+    ext === '.png'
+      ? await img.png({ palette: true, quality: 90, compressionLevel: 9 }).toBuffer()
+      : ext === '.webp'
+        ? await img.webp({ quality: 75 }).toBuffer()
+        : await img.jpeg({ quality: 72, mozjpeg: true }).toBuffer();
   if (out.length < before) fs.writeFileSync(file, out);
   console.log(`  ${rel}: ${Math.round(before / 1024)} KB -> ${Math.round(Math.min(out.length, before) / 1024)} KB`);
 }

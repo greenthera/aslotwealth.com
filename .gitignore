@@ -17,6 +17,9 @@
 /.next/
 /out/
 
+# generated from content/blog/<slug>/ by scripts/sync-blog-assets.mjs
+/public/blog/
+
 # production
 /build
 

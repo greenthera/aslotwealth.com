@@ -22,13 +22,30 @@ const escapeHtml = (s: string) =>
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#39;');
 
-/** Only allow safe link targets (no javascript: etc.). Local paths get the base path. */
-const safeUrl = (url: string) => {
-  const u = url.trim();
-  return /^(https?:\/\/|mailto:|tel:|\/|#)/i.test(u) ? withBasePath(u) : '#';
+export type MarkdownOptions = {
+  /**
+   * Turns a relative path written in the post ("image1.png", "./charts/a.png")
+   * into a site URL ("/blog/<slug>/image1.png"). Without it, relative paths
+   * are dropped.
+   */
+  resolveRelative?: (path: string) => string;
 };
 
-function inline(text: string): string {
+/**
+ * Only allow safe targets (no javascript: etc.):
+ *   https://…, mailto:, tel:, #anchor → as written
+ *   /site/path                        → + base path
+ *   image1.png, ./img/a.png           → resolved next to the post (+ base path)
+ */
+const safeUrl = (url: string, opts: MarkdownOptions) => {
+  const u = url.trim();
+  if (/^(https?:\/\/|mailto:|tel:|#)/i.test(u)) return u;
+  if (u.startsWith('/')) return withBasePath(u);
+  if (/^[a-z][a-z0-9+.-]*:/i.test(u)) return '#'; // any other scheme is unsafe
+  return opts.resolveRelative ? withBasePath(opts.resolveRelative(u)) : '#';
+};
+
+function inline(text: string, opts: MarkdownOptions): string {
   // Pull out inline code first so its contents are not formatted.
   const codes: string[] = [];
   let s = text.replace(/`([^`]+)`/g, (_, c) => {
@@ -40,10 +57,10 @@ function inline(text: string): string {
 
   // Images before links, since ![alt](src) contains [alt](src).
   s = s.replace(/!\[([^\]]*)\]\(([^)\s]+)\)/g, (_, alt, src) =>
-    `<img src="${safeUrl(src)}" alt="${alt}" loading="lazy" decoding="async" />`
+    `<img src="${safeUrl(src, opts)}" alt="${alt}" loading="lazy" decoding="async" />`
   );
   s = s.replace(/\[([^\]]+)\]\(([^)\s]+)\)/g, (_, label, href) => {
-    const url = safeUrl(href);
+    const url = safeUrl(href, opts);
     const external = /^https?:\/\//i.test(url);
     return `<a href="${url}"${external ? ' target="_blank" rel="noopener noreferrer"' : ''}>${label}</a>`;
   });
@@ -54,7 +71,7 @@ function inline(text: string): string {
   return s.replace(/\u0000(\d+)\u0000/g, (_, i) => codes[Number(i)]);
 }
 
-export function markdownToHtml(md: string): string {
+export function markdownToHtml(md: string, opts: MarkdownOptions = {}): string {
   const lines = md.replace(/\r\n?/g, '\n').split('\n');
   const out: string[] = [];
   let i = 0;
@@ -84,7 +101,7 @@ export function markdownToHtml(md: string): string {
     const h = line.match(/^(#{1,6})\s+(.*)$/);
     if (h) {
       const level = Math.min(Math.max(h[1].length, 2), 4);
-      out.push(`<h${level}>${inline(h[2].trim())}</h${level}>`);
+      out.push(`<h${level}>${inline(h[2].trim(), opts)}</h${level}>`);
       i++;
       continue;
     }
@@ -100,7 +117,7 @@ export function markdownToHtml(md: string): string {
     if (/^>\s?/.test(line)) {
       const buf: string[] = [];
       while (i < lines.length && /^>\s?/.test(lines[i])) buf.push(lines[i++].replace(/^>\s?/, ''));
-      out.push(`<blockquote>${markdownToHtml(buf.join('\n'))}</blockquote>`);
+      out.push(`<blockquote>${markdownToHtml(buf.join('\n'), opts)}</blockquote>`);
       continue;
     }
 
@@ -110,7 +127,7 @@ export function markdownToHtml(md: string): string {
       const re = ordered ? /^\d+\.\s+/ : /^[-*]\s+/;
       const items: string[] = [];
       while (i < lines.length && re.test(lines[i])) {
-        items.push(`<li>${inline(lines[i].replace(re, '').trim())}</li>`);
+        items.push(`<li>${inline(lines[i].replace(re, '').trim(), opts)}</li>`);
         i++;
       }
       const tag = ordered ? 'ol' : 'ul';
@@ -121,7 +138,7 @@ export function markdownToHtml(md: string): string {
     // Paragraph: consecutive non-empty lines that don't start another block.
     const buf: string[] = [];
     while (i < lines.length && lines[i].trim() && !isBlockStart(lines[i])) {
-      buf.push(inline(lines[i].trim()));
+      buf.push(inline(lines[i].trim(), opts));
       i++;
     }
     out.push(`<p>${buf.join('<br />')}</p>`);

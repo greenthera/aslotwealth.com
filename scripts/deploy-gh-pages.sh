@@ -47,6 +47,9 @@ rm -rf "$BUILD/app/api"
 sed -i.bak "s/^export const runtime = 'edge';/export const dynamic = 'force-static';/" \
   "$BUILD/app/opengraph-image.tsx" && rm -f "$BUILD/app/opengraph-image.tsx.bak"
 
+echo "▸ Copying blog images (content/blog/<slug>/ → public/blog/<slug>/)…"
+node "$ROOT/scripts/sync-blog-assets.mjs" "$BUILD"
+
 echo "▸ Optimising images (no image server on GitHub Pages)…"
 node "$ROOT/scripts/optimize-images-for-export.mjs" "$BUILD"
 
@@ -56,6 +59,11 @@ echo "▸ Building static site…"
 OUT="$BUILD/out"
 # Without this, GitHub's Jekyll step drops the _next/ folder (CSS/JS).
 touch "$OUT/.nojekyll"
+
+# Renamed posts (redirect_from): replace the JS-only redirect Next exports
+# with a real static redirect page (works without JS and for link previews).
+echo "▸ Writing redirects for renamed blog posts…"
+node "$ROOT/scripts/write-static-redirects.mjs" "$BUILD" "$OUT" "$BASE_PATH"
 
 # GitHub Pages picks the Content-Type from the file extension. The exported
 # link-preview image has none ("opengraph-image"), so WhatsApp/Facebook may not

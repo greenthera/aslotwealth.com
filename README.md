@@ -4,7 +4,7 @@ A modern wealth management website built with Next.js, with a Markdown-powered b
 
 ## Features
 
-- **Blog**: posts are Markdown files in `content/blog/`, pre-rendered to static pages
+- **Blog**: one folder per post in `content/blog/<slug>/` (README.md + its images), pre-rendered to static pages
 - **No database or login needed**: everything is built at build time
 - **Responsive Design**: built with Tailwind CSS
 
@@ -38,27 +38,50 @@ No environment variables are required.
 
 ## Writing a blog post
 
-1. Copy `content/blog/_template.md` to a new file, e.g. `content/blog/my-new-post.md`.
-   The file name becomes the URL: `/blog/my-new-post`.
-2. Fill in the front matter at the top:
+Every post is a **folder** in `content/blog/`. The folder name is the URL, and the
+post's images live right next to its text:
+
+```
+content/blog/
+  my-new-post/          → /blog/my-new-post
+    README.md           ← the post
+    image1.png          ← its images (any number, any names)
+    chart.jpg
+  _template/            ← copy this to start a post ("_" folders are never published)
+```
+
+1. Copy the `content/blog/_template/` folder and rename the copy, e.g. `my-new-post`.
+   Use lowercase letters, numbers and dashes.
+2. Put the post's images in that folder.
+3. Edit `README.md`. Refer to images **by file name only**:
    ```md
    ---
    title: My New Post
-   date: 2026-11-16
+   date: 2026-11-18
    images:
-     - /blog/my-cover.jpg
-   draft: false
+     - image1.png      # first = cover, the rest = gallery
+   draft: false        # true hides the post
    ---
-   ```
-   - `images`: the first image is the cover, any others appear in a gallery.
-     Put local images in `public/blog/` and reference them as `/blog/<file>`.
-   - `draft: true` hides the post.
-3. Write the post in Markdown below the front matter: `##` headings, `**bold**`,
-   `*italic*`, `[links](url)`, `- lists`, `1. lists`, `> quotes`, `![images](url)`.
-4. With `npm run dev` running, refresh the page to see it. For the live site, rebuild
-   and redeploy. Posts are sorted newest first, by `date`.
 
-Files whose name starts with `_` are never published.
+   Text with an image: ![Chart of returns](chart.jpg)
+
+   The same image again, as often as needed: ![Chart](chart.jpg)
+   ```
+   Also supported: `##` headings, `**bold**`, `*italic*`, `[links](url)`,
+   `- lists`, `1. lists`, `> quotes`, and links to files in the folder (`[PDF](report.pdf)`).
+4. Run `npm run dev` and open `/blog/my-new-post`. Posts are sorted newest first by `date`.
+
+**Renaming a post?** Rename its folder, then list the old name in the front matter
+so links that were already shared keep working (they redirect to the new URL):
+```md
+redirect_from:
+  - old-folder-name
+```
+
+Images are copied to `public/blog/<slug>/` automatically when you run
+`npm run dev`, `npm run build` or `npm run deploy`. That folder is generated and
+git-ignored, so always edit images in `content/blog/`. If you add images while
+`npm run dev` is already running, run `npm run blog:sync` (or restart dev).
 
 ## Production build
 

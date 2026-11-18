@@ -11,6 +11,8 @@ export interface BlogPost {
   images: string[]
   /** false when the post has `draft: true`. Drafts are never published. */
   active: boolean
+  /** Old slugs (`redirect_from` in front matter) that redirect to this post. */
+  redirectFrom: string[]
   created_at: string
   updated_at: string
 }

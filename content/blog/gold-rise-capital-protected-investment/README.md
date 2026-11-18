@@ -1,8 +1,9 @@
 ---
-# File name = the original live URL: /blog/4afd9ab4-8ae2-46f3-81f5-d51545619019
-# Keep it unchanged so existing links and search results keep working.
 title: Get 5.2% on a 1% Gold Rise while keeping your Capital 100% secured.
 date: 2025-12-18T07:51:40Z
+# Old URL of this post (already shared / indexed). It now redirects here.
+redirect_from:
+  - 4afd9ab4-8ae2-46f3-81f5-d51545619019
 ---
 
 Here are three market-linked, capital-protected structures (MLDs) that let you participate in gold’s upside while safeguarding principal at maturity, each tailored to a different market view.

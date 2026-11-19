@@ -5,6 +5,7 @@ import { Check, Copy, MessageCircle, Navigation2, Phone } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import Reveal from '@/components/motion/Reveal';
 import { EMAIL, PHONE_DISPLAY, PHONE_HREF, WA_DEFAULT, waLink } from '@/lib/site';
+import { saveEnquiry } from '@/lib/googleForm';
 
 const ADDRESS =
   '9, Gr. Floor, West Side, Vishwakarma Society, b/h Vishwakarma Temple, Nr. ITC Building, Majura Gate, Surat, Gujarat – 395002';
@@ -61,6 +62,10 @@ const ContactSection = () => {
   const sendWhatsApp = (e: React.FormEvent) => {
     e.preventDefault();
     setSending(true);
+    // 1. Save to the Google Sheet (background), 2. open WhatsApp — same click.
+    saveEnquiry({ name, message });
+    // For GTM: a "Custom Event" trigger on "generate_lead" can count enquiries.
+    (window as unknown as { dataLayer?: object[] }).dataLayer?.push({ event: 'generate_lead', form: 'contact' });
     window.open(waLink(`Hi, my name is ${name}.\n\n${message}`), '_blank');
     setName('');
     setMessage('');
@@ -101,7 +106,7 @@ const ContactSection = () => {
         </Reveal>
 
         <div className="mt-14 grid gap-x-16 gap-y-14 lg:grid-cols-2">
-          {/* Message form — writes straight into WhatsApp, no inbox in between. */}
+          {/* Message form — saved to the enquiries Google Sheet, then opened in WhatsApp. */}
           <div>
             <form onSubmit={sendWhatsApp} className="space-y-6">
               <div>
@@ -142,7 +147,7 @@ const ContactSection = () => {
               </Button>
 
               <p className="meta text-ink/70">
-                Opens WhatsApp with your message ready to send. Nothing is stored on this site.
+                Your message is shared with our team and opens in WhatsApp, ready to send.
               </p>
             </form>
           </div>

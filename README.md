@@ -111,9 +111,14 @@ it to the `gh-pages` branch of `github.com/greenthera/aslotwealth.com`
 One-time setup in GitHub: **Settings → Pages → Build and deployment →
 Source: Deploy from a branch → Branch: `gh-pages` / `(root)` → Save.**
 
-- Without a custom domain the site is served at
+- **Live at `https://www.aslotwealth.com`.** `public/CNAME` holds the domain; it is
+  published with every deploy, so GitHub keeps the custom domain set.
+  `aslotwealth.com` (no www) redirects to `www` automatically.
+- DNS (already set): `www` → CNAME `greenthera.github.io`; root `aslotwealth.com` →
+  A records `185.199.108.153`, `185.199.109.153`, `185.199.110.153`, `185.199.111.153`.
+- In Settings → Pages, keep **Enforce HTTPS** ticked.
+- To change the domain, edit `public/CNAME` and also `SITE_URL` in `app/sitemap.ts`,
+  `metadataBase` in `app/layout.tsx` and the `Sitemap:` line in `public/robots.txt`.
+- Without `public/CNAME` the site would be served at
   `https://greenthera.github.io/aslotwealth.com/` (the script adds that path prefix automatically).
-- To use `www.aslotwealth.com`: create `public/CNAME` containing `www.aslotwealth.com`,
-  run `npm run deploy` again, set the domain in Settings → Pages, and point the
-  domain's DNS to GitHub Pages. The path prefix is then removed automatically.
 - Static hosting cannot run server code, so `app/api/*` routes are not included in this build.

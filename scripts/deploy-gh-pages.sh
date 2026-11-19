@@ -94,7 +94,9 @@ git push -f "$REPO_URL" gh-pages
 
 echo ""
 echo "✓ Deployed to the gh-pages branch."
-if [[ -n "$BASE_PATH" ]]; then
+if [[ -f "$OUT/CNAME" ]]; then
+  echo "  URL: https://$(tr -d '[:space:]' < "$OUT/CNAME")/  (live 1–2 minutes after the push)"
+elif [[ -n "$BASE_PATH" ]]; then
   OWNER="$(echo "$REPO_URL" | sed -E 's#.*github\.com[:/]([^/]+)/.*#\1#')"
   echo "  URL (after enabling Pages): https://${OWNER}.github.io${BASE_PATH}/"
 fi

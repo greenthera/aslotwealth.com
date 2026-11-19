@@ -1,5 +1,8 @@
 import Navigation from '@/components/Navigation';
 import Footer from '@/components/Footer';
+import { pageMetadata } from '@/lib/seo';
+
+export const metadata = pageMetadata('/terms-of-service');
 
 const TermsOfServicePage = () => {
     return (

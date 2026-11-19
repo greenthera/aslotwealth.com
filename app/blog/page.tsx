@@ -6,8 +6,10 @@ import Navigation from '@/components/Navigation';
 import Footer from '@/components/Footer';
 import BackToTop from '@/components/BackToTop';
 import BlogImage from '@/components/blog/BlogImage';
+import { pageMetadata } from '@/lib/seo';
 
 export const metadata: Metadata = {
+  ...pageMetadata('/blog'),
   title: 'Insights – Aslot Wealth Advisor',
   description:
     'Our perspectives on wealth management, financial planning, and markets, from a family practice in Surat since 1989.',

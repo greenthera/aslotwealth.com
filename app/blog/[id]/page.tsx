@@ -10,6 +10,7 @@ import ImageGallery from '@/components/blog/ImageGallery';
 import BlogImage from '@/components/blog/BlogImage';
 import ReadingProgress from '@/components/blog/ReadingProgress';
 import BackToTop from '@/components/BackToTop';
+import { pageMetadata } from '@/lib/seo';
 import { DISCLAIMER_MF } from '@/lib/site';
 
 interface BlogPostPageProps {
@@ -38,6 +39,12 @@ export function generateStaticParams() {
     // Old slugs (redirect_from) get a page too, which forwards to the new URL.
     ...[...getRedirects().keys()].map((id) => ({ id })),
   ];
+}
+
+/** Each post's canonical and og:url point at its own https URL. */
+export async function generateMetadata({ params }: BlogPostPageProps) {
+  const { id } = await params;
+  return getPost(id) ? pageMetadata(`/blog/${id}`) : {};
 }
 
 export default async function BlogPostPage({ params }: BlogPostPageProps) {

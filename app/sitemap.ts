@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import type { MetadataRoute } from 'next';
 import { getAllPosts } from '@/lib/blog';
+import { SITE_URL } from '@/lib/seo'; // https://aslotwealth.com — one source for every URL
 
 /**
  * /sitemap.xml — rebuilt on every `npm run build` / `npm run deploy`
@@ -14,9 +15,6 @@ import { getAllPosts } from '@/lib/blog';
  *                and old redirect_from slugs are left out).
  */
 export const dynamic = 'force-static';
-
-/** Canonical domain — same as metadataBase in app/layout.tsx. */
-const SITE_URL = 'https://aslotwealth.com';
 
 /**
  * Last content change of pages that are not driven by blog posts.

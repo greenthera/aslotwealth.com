@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Plus_Jakarta_Sans, Cormorant_Garamond } from "next/font/google";
 import "./globals.css";
 import { withBasePath } from "@/lib/basePath";
+import { SITE_URL, homeMetadata } from "@/lib/seo";
 import { GoogleTagManagerScript, GoogleTagManagerNoScript } from "@/components/GoogleTagManager";
 
 /* Two families, two roles. Limited weights keep the payload small on
@@ -26,12 +27,11 @@ const cormorant = Cormorant_Garamond({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://aslotwealth.com"),
+  metadataBase: new URL(SITE_URL),
   title: "Aslot Wealth Advisor – Personalised Investment Management",
   description:
     "A family wealth practice in Surat since 1989. Goal-aligned portfolios built for the long run. ₹75 crore+ AUM, 250+ clients, 99% retention.",
   authors: [{ name: "Aslot Wealth Advisor" }],
-  alternates: { canonical: "/" },
   // withBasePath() is a no-op except on a GitHub Pages build at /<repo>/.
   icons: {
     icon: [
@@ -43,21 +43,8 @@ export const metadata: Metadata = {
   },
   appleWebApp: { title: "Aslot" },
   manifest: withBasePath("/site.webmanifest"),
-  openGraph: {
-    title: "Aslot Wealth Advisor – Personalised Investment Management",
-    description:
-      "A family wealth practice in Surat since 1989. Goal-aligned portfolios built for the long run. ₹75 crore+ AUM, 250+ clients, 99% retention.",
-    type: "website",
-    locale: "en_IN",
-    url: "/",
-    siteName: "Aslot Wealth Advisor",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Aslot Wealth Advisor – Personalised Investment Management",
-    description:
-      "A family wealth practice in Surat since 1989. Goal-aligned portfolios built for the long run.",
-  },
+  // canonical + og:url for the homepage; every other page sets its own.
+  ...homeMetadata,
 };
 
 const jsonLd = {
@@ -66,7 +53,7 @@ const jsonLd = {
   name: "Aslot Wealth Advisor",
   description:
     "Personalised investment management and wealth advisory services in Surat, practising since 1989.",
-  url: "https://aslotwealth.com",
+  url: SITE_URL,
   telephone: "+91-9328826939",
   email: "info@aslotwealth.in",
   address: {

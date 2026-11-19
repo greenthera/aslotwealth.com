@@ -1,6 +1,8 @@
 import Navigation from '@/components/Navigation';
 import Footer from '@/components/Footer';
+import Link from 'next/link';
 import { pageMetadata } from '@/lib/seo';
+import { CookieSettings } from '@/components/CookieConsent';
 
 export const metadata = pageMetadata('/privacy-policy');
 
@@ -11,7 +13,7 @@ const PrivacyPolicyPage = () => {
             <main className="container mx-auto px-4 py-24">
                 <div className="max-w-4xl mx-auto">
                     <h1 className="text-4xl md:text-5xl font-bold mb-6 text-foreground">Privacy Policy</h1>
-                    <p className="text-muted-foreground mb-8">Last Updated: January 2025</p>
+                    <p className="text-muted-foreground mb-8">Last Updated: November 2026</p>
 
                     <div className="space-y-8 text-foreground">
                         <section>
@@ -48,6 +50,12 @@ const PrivacyPolicyPage = () => {
                                         <li>Pages visited and time spent on our website</li>
                                         <li>Referring website addresses</li>
                                     </ul>
+                                </div>
+                                <div>
+                                    <h3 className="text-lg font-semibold mb-2 text-foreground">2.3 Contact Form</h3>
+                                    <p className="leading-relaxed">
+                                        When you send a message through our website&apos;s contact form, your name and message are stored securely in Google Forms and Google Sheets so our team can reply, and are also opened in WhatsApp for you to send. We use these details only to respond to your enquiry.
+                                    </p>
                                 </div>
                             </div>
                         </section>
@@ -113,8 +121,14 @@ const PrivacyPolicyPage = () => {
                         <section>
                             <h2 className="text-2xl font-semibold mb-4 text-primary">8. Cookies and Tracking Technologies</h2>
                             <p className="text-muted-foreground leading-relaxed">
-                                We use cookies and similar tracking technologies to enhance your browsing experience and analyze website traffic. You can control cookie settings through your browser preferences. However, disabling cookies may limit certain features of our website.
+                                A preference cookie remembers your cookie choices for 182 days. With your permission, we use Google Analytics and Microsoft Clarity (through Google Tag Manager) to understand how our website is used. These analytics tools load only after you click Accept or allow Analytics; advertising consent remains denied. The map in our contact section is provided by Google Maps, which may use its own cookies.
                             </p>
+                            <p className="text-muted-foreground leading-relaxed mt-3">
+                                You can change your choice at any time using Cookie settings in the footer. Read our{' '}
+                                <Link href="/cookie-policy" className="text-primary underline underline-offset-4">Cookie Policy</Link>{' '}
+                                for details.
+                            </p>
+                            <CookieSettings className="mt-4 inline-flex min-h-11 items-center border border-primary px-5 text-sm font-medium text-primary transition-colors hover:bg-primary hover:text-primary-foreground" />
                         </section>
 
                         <section>

@@ -907,3 +907,61 @@
 .journey[data-anim='on'] [data-on='true'] .era-layer.is-active {
   transform: scaleY(1);
 }
+
+/* ── Cookie consent (vanilla-cookieconsent) — site palette, square corners ── */
+#cc-main {
+  --cc-font-family: var(--font-sans), system-ui, sans-serif;
+  --cc-bg: hsl(var(--canvas));
+  --cc-primary-color: hsl(var(--ink));
+  --cc-secondary-color: hsl(150 12% 32%);
+  --cc-link-color: hsl(var(--forest));
+  --cc-btn-primary-bg: hsl(var(--forest));
+  --cc-btn-primary-color: #fff;
+  --cc-btn-primary-border-color: hsl(var(--forest));
+  --cc-btn-primary-hover-bg: hsl(150 93% 11%);
+  --cc-btn-primary-hover-color: #fff;
+  --cc-btn-primary-hover-border-color: hsl(150 93% 11%);
+  --cc-btn-secondary-bg: hsl(var(--surface));
+  --cc-btn-secondary-color: hsl(var(--forest));
+  --cc-btn-secondary-border-color: hsl(var(--border));
+  --cc-btn-secondary-hover-bg: hsl(96 19% 90%);
+  --cc-btn-secondary-hover-color: hsl(var(--forest));
+  --cc-btn-secondary-hover-border-color: hsl(var(--input));
+  --cc-toggle-on-bg: hsl(var(--forest));
+  --cc-separator-border-color: hsl(var(--border));
+  --cc-cookie-category-block-bg: hsl(var(--surface));
+  --cc-cookie-category-block-hover-bg: hsl(96 19% 92%);
+  --cc-modal-border-radius: var(--radius);
+  --cc-btn-border-radius: var(--radius);
+  --cc-pm-toggle-border-radius: var(--radius);
+  --cc-modal-transition-duration: 0.2s;
+}
+/* Keep consent panels at their final size while fading between views. */
+#cc-main .cc--anim .cm,
+#cc-main .cc--anim .pm {
+  transition-property: opacity, visibility;
+}
+#cc-main .cm,
+.show--consent #cc-main .cc--anim .cm {
+  transform: none;
+}
+#cc-main .pm--box,
+.show--preferences #cc-main .cc--anim .pm--box {
+  transform: translateY(-50%);
+}
+@media (max-width: 640px) {
+  #cc-main .pm,
+  .show--preferences #cc-main .cc--anim .pm {
+    transform: none !important;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  #cc-main { --cc-modal-transition-duration: 0s; }
+}
+#cc-main .toggle__icon-circle,
+#cc-main .pm__badge,
+#cc-main .pm__section,
+#cc-main .pm__section-title {
+  border-radius: var(--radius);
+}
+#cc-main .cc__link { text-decoration: underline; text-underline-offset: 3px; }

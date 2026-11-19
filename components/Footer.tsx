@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { InstagramIcon, LinkedInIcon } from '@/components/BrandIcons';
 import logo from '@/assets/images/footer_logo.png';
 import { DISCLAIMER_MF, EMAIL } from '@/lib/site';
+import { CookieSettings } from '@/components/CookieConsent';
 
 const QUICK = [
   { href: '/#home', label: 'Home' },
@@ -14,6 +15,7 @@ const QUICK = [
 
 const LEGAL = [
   { href: '/privacy-policy', label: 'Privacy Policy' },
+  { href: '/cookie-policy', label: 'Cookie Policy' },
   { href: '/terms-of-service', label: 'Terms of Service' },
   { href: '/disclaimer', label: 'Disclaimer' },
   { href: '/regulatory-information', label: 'Regulatory Information' },
@@ -80,6 +82,10 @@ const Footer = () => (
                 </Link>
               </li>
             ))}
+            <li>
+              {/* Re-opens the cookie dialog so visitors can change their choice. */}
+              <CookieSettings className="prose-sm-x text-white/65 hover:text-white" />
+            </li>
           </ul>
           <a
             href={`mailto:${EMAIL}`}

@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import { Plus_Jakarta_Sans, Cormorant_Garamond } from "next/font/google";
+import "vanilla-cookieconsent/dist/cookieconsent.css";
 import "./globals.css";
 import { withBasePath } from "@/lib/basePath";
 import { SITE_URL, homeMetadata } from "@/lib/seo";
-import { GoogleTagManagerScript, GoogleTagManagerNoScript } from "@/components/GoogleTagManager";
+import Script from "next/script";
+import { CookieConsentBanner } from "@/components/CookieConsent";
 
 /* Two families, two roles. Limited weights keep the payload small on
    Indian mobile networks; next/font self-hosts and preloads both. */
@@ -128,11 +130,23 @@ export default function RootLayout({
   return (
     <html lang="en-IN">
       <head>
-        <GoogleTagManagerScript />
+        {/* Google Consent Mode defaults: everything denied until the visitor
+            chooses. GTM (GA4 + Microsoft Clarity) is loaded by
+            lib/cookieConsent.ts only after "Accept" / Analytics is allowed.
+            No <noscript> GTM: without JavaScript nobody can consent. */}
+        <Script id="consent-defaults" strategy="beforeInteractive">{`
+          window.dataLayer = window.dataLayer || [];
+          window.gtag = function(){window.dataLayer.push(arguments);};
+          window.gtag('consent', 'default', {
+            ad_storage: 'denied', ad_user_data: 'denied',
+            ad_personalization: 'denied', analytics_storage: 'denied',
+            wait_for_update: 500
+          });
+        `}</Script>
       </head>
       <body className={`${sans.variable} ${cormorant.variable} antialiased`}>
-        <GoogleTagManagerNoScript />
         {children}
+        <CookieConsentBanner />
 
         <script
           type="application/ld+json"

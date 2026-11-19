@@ -13,7 +13,8 @@ const ADDRESS =
 const MAP_SRC =
   'https://www.google.com/maps/embed?pb=!1m17!1m12!1m3!1d3720.2642259473105!2d72.81732347526084!3d21.18166008050618!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m2!1m1!2zMjHCsDEwJzU0LjAiTiA3MsKwNDknMTEuNiJF!5e0!3m2!1sen!2sin!4v1762702185037!5m2!1sen!2sin';
 
-const DIRECTIONS = 'https://maps.google.com/?q=21.18166,72.81732';
+/** Aslot Wealth Advisor's Google Maps place (opens the Maps app on phones). */
+const DIRECTIONS = 'https://maps.app.goo.gl/7iZS3cHPLwXuVSUUA';
 
 /** Mon–Sat, 10:30–19:00 IST. */
 const isOpenNow = () => {

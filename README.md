@@ -111,9 +111,9 @@ it to the `gh-pages` branch of `github.com/greenthera/aslotwealth.com`
 One-time setup in GitHub: **Settings → Pages → Build and deployment →
 Source: Deploy from a branch → Branch: `gh-pages` / `(root)` → Save.**
 
-- **Live at `https://www.aslotwealth.com`.** `public/CNAME` holds the domain; it is
+- **Live at `https://aslotwealth.com`.** `public/CNAME` holds the domain; it is
   published with every deploy, so GitHub keeps the custom domain set.
-  `aslotwealth.com` (no www) redirects to `www` automatically.
+  `www.aslotwealth.com` redirects to `aslotwealth.com` automatically.
 - DNS (already set): `www` → CNAME `greenthera.github.io`; root `aslotwealth.com` →
   A records `185.199.108.153`, `185.199.109.153`, `185.199.110.153`, `185.199.111.153`.
 - In Settings → Pages, keep **Enforce HTTPS** ticked.

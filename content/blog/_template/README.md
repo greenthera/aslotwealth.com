@@ -23,7 +23,7 @@ Write the opening paragraph here.
 
 ## A section heading
 
-Normal text with **bold**, *italic* and a [link](https://www.aslotwealth.com).
+Normal text with **bold**, *italic* and a [link](https://aslotwealth.com).
 
 ![Describe the image for screen readers](image1.png)
 

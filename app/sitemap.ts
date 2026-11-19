@@ -16,7 +16,7 @@ import { getAllPosts } from '@/lib/blog';
 export const dynamic = 'force-static';
 
 /** Canonical domain — same as metadataBase in app/layout.tsx. */
-const SITE_URL = 'https://www.aslotwealth.com';
+const SITE_URL = 'https://aslotwealth.com';
 
 /**
  * Last content change of pages that are not driven by blog posts.

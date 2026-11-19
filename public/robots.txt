@@ -32,4 +32,4 @@ User-agent: *
 Allow: /
 Disallow: /api/
 
-Sitemap: https://www.aslotwealth.com/sitemap.xml
+Sitemap: https://aslotwealth.com/sitemap.xml

@@ -26,7 +26,7 @@ const cormorant = Cormorant_Garamond({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://www.aslotwealth.com"),
+  metadataBase: new URL("https://aslotwealth.com"),
   title: "Aslot Wealth Advisor – Personalised Investment Management",
   description:
     "A family wealth practice in Surat since 1989. Goal-aligned portfolios built for the long run. ₹75 crore+ AUM, 250+ clients, 99% retention.",
@@ -66,7 +66,7 @@ const jsonLd = {
   name: "Aslot Wealth Advisor",
   description:
     "Personalised investment management and wealth advisory services in Surat, practising since 1989.",
-  url: "https://www.aslotwealth.com",
+  url: "https://aslotwealth.com",
   telephone: "+91-9328826939",
   email: "info@aslotwealth.in",
   address: {
